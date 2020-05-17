@@ -24,7 +24,20 @@ according to the pivot, the elements smaller than the
 pivot is places on the left and the elements
 greater than the pivot is placed to the right of pivot.
 '''
+
+swaps = 0
+comps = 0
+og_swaps = 0
+rando_swaps = 0
+three_swaps = 0
+
+og_comps = 0
+rando_comps = 0
+three_comps = 0
+
 def partition(arr,start,stop):
+    global comps
+
     pivot = start # pivot
     i = start + 1 # a variable to memorize where the
                   # partition in the array starts from.
@@ -33,8 +46,11 @@ def partition(arr,start,stop):
         # if the current element is smaller or equal to pivot,
         # shift it to the left side of the partition.
         if arr[j] <= arr[pivot]:
-            arr[i] , arr[j] = arr[j] , arr[i]
+            swap(arr, i, j)
+            #arr[i] , arr[j] = arr[j] , arr[i]
             i = i + 1
+        else:
+            comps = comps + 1
     arr[pivot] , arr[i - 1] = arr[i - 1] , arr[pivot]
     pivot = i - 1
     return (pivot)
@@ -63,7 +79,12 @@ def find_median(a, b, c):
 
 
 def swap(array,a,b):
+    global swaps
+    global comps
+
     array[a],array[b] = array[b],array[a]
+    swaps = swaps + 1
+    comps = comps + 1
 
 
 def median_partition(array, start, end):
@@ -71,10 +92,11 @@ def median_partition(array, start, end):
     median = median + start
     left = start + 1
     if (array[median] - array[end - 1])*(array[start] - array[median]) >= 0:
-        swap(array, start, median)
+        array[start], array[median] = array[median], array[start]
     elif (array[end - 1] - array[median])*(array[start] - array[end - 1]) >= 0:
-        swap(array, start, median)
+        array[start], array[end - 1] = array[end - 1], array[start]
     pivot = array[start]
+
     for right in range(start,end):
         if pivot > array[right]:
             swap(array,left,right)
@@ -123,36 +145,58 @@ def median_quicksort(array,start,end):
 
 def dispArray(array):
     counter = 0;
-    for i in range(0 , len(array)):
+    for i in range(0 , len(array)-1):
         sys.stdout.write("%s" % array[i])
-        if (i%20 == 0 or i == len(array)-1) and i != 0:
+        if (i%20 == 0) and i != 0 :
+            sys.stdout.write('\n')
+        elif (i%20 == 0 ) and i !=0:
+
             sys.stdout.write('\n')
         else:
             sys.stdout.write(',')
+def init_counters(swap_counter, comp_counter):
+    # saves counters and inititializes them
+    global swaps
+    global comps
 
+    swap_counter = swaps
+    swaps = 0
+    comp_counter = comps
+    comps = 0
+
+    return swap_counter, comp_counter
 
 
 low = 1
 size = 1000
 high = size + 1
 
+
+
+
 list1 = np.random.randint(low, high, size)
 list2 = [i for i in range(1,size)]
-list3 = list2.reverse()
+list3 = list2[::-1]
 
 
 dispArray(list1)
 
 
-
+# First list
 start = time.time()
 
 list1_sorted = og_quicksort(list1, 0, len(list1) - 1)
 
 end = time.time()
 
+og_swaps, og_comps = init_counters(og_swaps, og_comps)
+
 og_time = 1000*(end - start)
+print "\n To calculate this with the original algorithm,", \
+        "It took me", og_time, "msecs, ", og_swaps, " swaps, ",\
+        "and", og_comps, " comparisons."
 print  "The sorted list using the original algorithm: \n", dispArray(list1_sorted)
+
 
 start = time.time()
 
@@ -160,8 +204,15 @@ list1_sorted = random_quicksort(list1, 0, len(list1) - 1)
 
 end = time.time()
 
+rando_swaps, rando_comps = init_counters(rando_swaps, rando_comps)
+
 rand_time = 1000*(end - start)
+
+print "To calculate this with the random algorithm,", \
+    "It took me", rand_time, "msecs, ", rando_swaps, " swaps, ",\
+        "and", rando_comps, " comparisons."
 print  "The sorted list using the random sort: \n", dispArray(list1_sorted)
+
 
 start = time.time()
 
@@ -169,18 +220,105 @@ list1_sorted = median_quicksort(list1, 0, len(list1) - 1)
 
 end = time.time()
 
+three_swaps, three_comps = init_counters(three_swaps, three_comps)
+
 median_time = 1000*(end - start)
+print "To calculate this with the median algorithm,", \
+    "It took me", median_time, "msecs, ", three_swaps, " swaps, ",\
+        "and", three_comps, " comparisons."
 print  "The sorted list using the median sort: \n", dispArray(list1_sorted)
 
-print "To calculate this with the improved random algorithm,", \
-    "It took me", rand_time, "msecs"
 
+# Second list
+
+start = time.time()
+
+list2_sorted = og_quicksort(list2, 0, len(list2) - 1)
+
+end = time.time()
+
+og_swaps, og_comps = init_counters(og_swaps, og_comps)
+
+og_time = 1000*(end - start)
 print "To calculate this with the original algorithm,", \
-    "It took me", og_time, "msecs"
+        "It took me", og_time, "msecs, ", og_swaps, " swaps, ",\
+        "and", og_comps, " comparisons."
+print  "The sorted list using the original algorithm: \n", dispArray(list1_sorted)
 
-print "To calculate this with the improved median algorithm,", \
-    "It took me", median_time, "msecs"
+
+start = time.time()
+
+list2_sorted = random_quicksort(list2, 0, len(list2) - 1)
+
+end = time.time()
+
+rando_swaps, rando_comps = init_counters(rando_swaps, rando_comps)
+
+rand_time = 1000*(end - start)
+
+print "To calculate this with the random algorithm,", \
+    "It took me", rand_time, "msecs, ", rando_swaps, " swaps, ",\
+        "and", rando_comps, " comparisons."
+print  "The sorted list using the random sort: \n", dispArray(list1_sorted)
 
 
-#dispArray(list1_sorted)
+start = time.time()
 
+list2_sorted = median_quicksort(list2, 0, len(list2) - 1)
+
+end = time.time()
+
+three_swaps, three_comps = init_counters(three_swaps, three_comps)
+
+median_time = 1000*(end - start)
+print "To calculate this with the median algorithm,", \
+    "It took me", median_time, "msecs, ", three_swaps, " swaps, ",\
+        "and", three_comps, " comparisons."
+print  "The sorted list using the median sort: \n", dispArray(list1_sorted)
+
+# Third list
+
+start = time.time()
+
+list3_sorted = og_quicksort(list3, 0, len(list3) - 1)
+
+end = time.time()
+
+og_swaps, og_comps = init_counters(og_swaps, og_comps)
+
+og_time = 1000*(end - start)
+print "To calculate this with the original algorithm,", \
+        "It took me", og_time, "msecs, ", og_swaps, " swaps, ",\
+        "and", og_comps, " comparisons."
+print  "The sorted list using the original algorithm: \n", dispArray(list1_sorted)
+
+
+start = time.time()
+
+list3_sorted = random_quicksort(list3, 0, len(list3) - 1)
+
+end = time.time()
+
+rando_swaps, rando_comps = init_counters(rando_swaps, rando_comps)
+
+rand_time = 1000*(end - start)
+
+print "To calculate this with the random algorithm,", \
+    "It took me", rand_time, "msecs, ", rando_swaps, " swaps, ",\
+        "and", rando_comps, " comparisons."
+print  "The sorted list using the random sort: \n", dispArray(list1_sorted)
+
+
+start = time.time()
+
+list3_sorted = median_quicksort(list3, 0, len(list3) - 1)
+
+end = time.time()
+
+three_swaps, three_comps = init_counters(three_swaps, three_comps)
+
+median_time = 1000*(end - start)
+print "To calculate this with the median algorithm,", \
+    "It took me", median_time, "msecs, ", three_swaps, " swaps, ",\
+        "and", three_comps, " comparisons."
+print  "The sorted list using the median sort: \n", dispArray(list1_sorted)
