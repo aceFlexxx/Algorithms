@@ -1,86 +1,86 @@
-# An program trying out various
-# quicksort implementations
+    # An program trying out various
+    # quicksort implementations
 
-import math
-import numpy as np
-import sys
-import time
-import random
+    import math
+    import numpy as np
+    import sys
+    import time
+    import random
 
 
-'''
-This function takes the first element as pivot,
-places the pivot element at the correct position
-in the sorted array. All the elements are re-arranged
-according to the pivot, the elements smaller than the
-pivot is places on the left and the elements
-greater than the pivot is placed to the right of pivot.
-'''
-'''
-This function takes the first element as pivot,
-places the pivot element at the correct position
-in the sorted array. All the elements are re-arranged
-according to the pivot, the elements smaller than the
-pivot is places on the left and the elements
-greater than the pivot is placed to the right of pivot.
-'''
+    '''
+    This function takes the first element as pivot,
+    places the pivot element at the correct position
+    in the sorted array. All the elements are re-arranged
+    according to the pivot, the elements smaller than the
+    pivot is places on the left and the elements
+    greater than the pivot is placed to the right of pivot.
+    '''
+    '''
+    This function takes the first element as pivot,
+    places the pivot element at the correct position
+    in the sorted array. All the elements are re-arranged
+    according to the pivot, the elements smaller than the
+    pivot is places on the left and the elements
+    greater than the pivot is placed to the right of pivot.
+    '''
 
-swaps = 0
-comps = 0
-og_swaps = 0
-rando_swaps = 0
-three_swaps = 0
+    swaps = 0
+    comps = 0
+    og_swaps = 0
+    rando_swaps = 0
+    three_swaps = 0
 
-og_comps = 0
-rando_comps = 0
-three_comps = 0
+    og_comps = 0
+    rando_comps = 0
+    three_comps = 0
 
-def partition(arr,start,stop):
-    global comps
+    def partition(arr,start,stop):
+        global comps
 
-    pivot = start # pivot
-    i = start + 1 # a variable to memorize where the
-                  # partition in the array starts from.
-    for j in range(start + 1, stop + 1):
+        pivot = start # pivot
+        i = start + 1 # a variable to memorize where the
+                      # partition in the array starts from.
+        for j in range(start + 1, stop + 1):
 
-        # if the current element is smaller or equal to pivot,
-        # shift it to the left side of the partition.
-        if arr[j] <= arr[pivot]:
-            swap(arr, i, j)
-            #arr[i] , arr[j] = arr[j] , arr[i]
-            i = i + 1
+            # if the current element is smaller or equal to pivot,
+            # shift it to the left side of the partition.
+            if arr[j] <= arr[pivot]:
+                swap(arr, i, j)
+                #arr[i] , arr[j] = arr[j] , arr[i]
+                i = i + 1
+            else:
+                comps = comps + 1
+        arr[pivot] , arr[i - 1] = arr[i - 1] , arr[pivot]
+        pivot = i - 1
+        return (pivot)
+
+
+    # This function generates random pivot, swaps the first
+    # element with the pivot and calls the partition fucntion.
+    def partition_rand(array , start, end):
+
+        # Generating a random number between the
+        # starting index of the array and the
+        # ending index of the array.
+        rand_pivot = random.randrange(start, end)
+
+        # Swapping the starting element of the array and the pivot
+        array[start], array[rand_pivot] = array[rand_pivot], array[start]
+        return partition(array, start, end)
+
+    def find_median(a, b, c):
+        if (a - b)*(c - a) >= 0:
+            return a
+        elif (b - a)*(c - b) >= 0:
+            return b
         else:
-            comps = comps + 1
-    arr[pivot] , arr[i - 1] = arr[i - 1] , arr[pivot]
-    pivot = i - 1
-    return (pivot)
+            return c
 
 
-# This function generates random pivot, swaps the first
-# element with the pivot and calls the partition fucntion.
-def partition_rand(array , start, end):
-
-    # Generating a random number between the
-    # starting index of the array and the
-    # ending index of the array.
-    rand_pivot = random.randrange(start, end)
-
-    # Swapping the starting element of the array and the pivot
-    array[start], array[rand_pivot] = array[rand_pivot], array[start]
-    return partition(array, start, end)
-
-def find_median(a, b, c):
-    if (a - b)*(c - a) >= 0:
-        return a
-    elif (b - a)*(c - b) >= 0:
-        return b
-    else:
-        return c
-
-
-def swap(array,a,b):
-    global swaps
-    global comps
+    def swap(array,a,b):
+        global swaps
+        global comps
 
     array[a],array[b] = array[b],array[a]
     swaps = swaps + 1
